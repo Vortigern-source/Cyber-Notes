@@ -1,6 +1,6 @@
 # Cyber Security Notes
 
-Welcome to my Cyber Security Notes repository! Here, I'll store all my notes, resources, and references related to cybersecurity. As a beginner, this is my space to document what I learn and reference it whenever necessary.
+Hi, My name is Hamza and welcome to my Cyber Security Notes repository! Here, I'll store all my notes, resources, and references related to cybersecurity. As a beginner, this is my space to document what I learn and reference it whenever necessary.
 
 ## Introduction
 
