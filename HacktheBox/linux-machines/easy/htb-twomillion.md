@@ -7,7 +7,7 @@ description: >-
 
 # HTB - TwoMillion
 
-<figure><img src="HacktheBox/.gitbook/assets/TwoMillion.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/TwoMillion.png" alt=""><figcaption></figcaption></figure>
 
 ## Overview
 
@@ -17,35 +17,35 @@ This box is quite a straightforward box. The foothold was the most interesting p
 
 Firstly we run an Nmap scan; `sudo nmap -p- -sC -sV -sS $ip`. -p- is for all ports, -sC is for scripts and -sV is for enumerating versions.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (6).png" alt=""><figcaption></figcaption></figure>
 
 The typical two ports are open, 22 and 80. I see that it redirects to a domain (2million.htb) as per HTB fashion, I add this to my host's file.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (7).png" alt=""><figcaption></figcaption></figure>
 
 Checking out the page, it's an old version of hackthebox. I move to the login page and try to interact with the application but we do not have an account. I attempt to register at /register but it says I need an invite code.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (8).png" alt=""><figcaption></figcaption></figure>
 
 ### Gobuster
 
 So we know we need an invite code to move forward. I run a gobuster to enumerate pages and directories, I use a wordlist that's what I normally use from seclists and a -b 301 because the status code 301 was causing issues and I increased the threads to 100 as it was relatively slow if I dont.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (11).png" alt=""><figcaption></figcaption></figure>
 
 There are a few pages but the only ones that seem of interest are api and invite. Since we need an invite code I investigate the invite page but it prompts for an invite code.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (9).png" alt=""><figcaption></figcaption></figure>
 
 I inspect further and find a javascript script being used called inviteapi.min.js.
 
 I try to read it however it is obfuscated, after pasting it in js-beautify, we can read it.\\
 
-<figure><img src="HacktheBox/.gitbook/assets/image (14).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (14).png" alt=""><figcaption></figcaption></figure>
 
 Theres two main functions where the first verifies the invite code and the second function which seems to allow us to make our own invite code by sending a POST request a to /api/v1/invite/how/to/generate
 
-<figure><img src="HacktheBox/.gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (15).png" alt=""><figcaption></figcaption></figure>
 
 ### Invite Code
 
@@ -61,7 +61,7 @@ Decoding it in cyberchef we get the invite code: AMMDX-18MON-15C8D-1X4T0
 
 With this we can create an account on the website.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (16).png" alt=""><figcaption></figcaption></figure>
 
 Now that we have an account I look around and nothing seems like a vector except for the access page which has working buttons. Capturing the requests of the generate vpn pack shows that it sends a request to an api endpoint which we had found in gobuster.
 
@@ -71,39 +71,39 @@ We should enumerate this api endpoint and try to find some leads.
 
 Having a look at the base /api/ it says /api/v1.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (17).png" alt=""><figcaption></figcaption></figure>
 
 ### API
 
 So I next navigate to /api/v1/ and we get a list of all the endpoints,
 
-<figure><img src="HacktheBox/.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (18).png" alt=""><figcaption></figcaption></figure>
 
 The one I believe we are looking for is the /api/v1/admin/settings/update
 
 I send a PUT request to the endpoint in burpsuite and change our user to admin, setting our email as the email we created the account with and is\_admin as 1. This returns a 200 OK which means we are successful.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (19).png" alt=""><figcaption></figcaption></figure>
 
 Going back to our home page and logging back in, nothing has seemed to change. There isnt any admin panel either. I look back into the API endpoints we had found and look at the other admin ones, theres an endpoint to generate a vpn pack for the admin under /api/v1/admin/vpn/generate.
 
 Sending a post request to this endpoint with my username set we get a response of a VPN file generated:
 
-<figure><img src="HacktheBox/.gitbook/assets/image (20).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (20).png" alt=""><figcaption></figcaption></figure>
 
 ### Command Injection
 
 For a while I poke around unsure what to do but then I realised we could probably inject a command as it takes the username as an input and generates a vpn. One thing I thought of is using semicolon to seperate the commands and inject my own after putting the username and before the string ends to ensure the generation doesnt fail and it continues to run the commands before and after my injection. So it would look like this `"username": "test; whoami ;"`
 
-<figure><img src="HacktheBox/.gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (21).png" alt=""><figcaption></figcaption></figure>
 
 Running ls -la to see all files including hidden ones, a file stands out which is .env, this contains the environment variables and often has credentials. Outputting it, we get some credentials which we can ssh with.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (22).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (22).png" alt=""><figcaption></figcaption></figure>
 
 ### Foothold
 
-<figure><img src="HacktheBox/.gitbook/assets/image (23).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (23).png" alt=""><figcaption></figcaption></figure>
 
 Now we have the user admin and have gotten the user flag!.
 
@@ -113,13 +113,13 @@ The first thing I typically do is run LinPeas.
 
 Something that looks like a vector is the pkexec policy:
 
-<figure><img src="HacktheBox/.gitbook/assets/image (24).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (24).png" alt=""><figcaption></figcaption></figure>
 
 I also had a look at the mail and theres a message from "HTB Godfather" to admin.
 
 <div data-full-width="true">
 
-<figure><img src="HacktheBox/.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (26).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -131,7 +131,7 @@ The exploit requires us to download a few files and a makefile. We also need two
 
 <div data-full-width="true">
 
-<figure><img src="HacktheBox/.gitbook/assets/image (27) (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (27) (1).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -141,7 +141,7 @@ And just like that we get root. I'll grab root.txt.
 
 There's another file in the /root folder, called thank\_you.json:\\
 
-<figure><img src="HacktheBox/.gitbook/assets/image (29).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (29).png" alt=""><figcaption></figcaption></figure>
 
 ```
 root@2million:/root# cat thank_you.json
@@ -152,7 +152,7 @@ Its a URL encoded string, Decoding this we get a hex string:\\
 
 <div data-full-width="true">
 
-<figure><img src="HacktheBox/.gitbook/assets/image (30).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (30).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -166,7 +166,7 @@ Another encoded string, its encoded with base64 then xor with the key has HackTh
 
 <div data-full-width="true">
 
-<figure><img src="HacktheBox/.gitbook/assets/image (31).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (31).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 

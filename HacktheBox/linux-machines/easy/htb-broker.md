@@ -6,7 +6,7 @@ description: >-
 
 # HTB - Broker
 
-<figure><img src="HacktheBox/.gitbook/assets/Broker (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/Broker (2).png" alt=""><figcaption></figcaption></figure>
 
 ## Overview
 
@@ -94,11 +94,11 @@ PORT      STATE SERVICE    VERSION
 
 Navigating to the webserver, it immediatley prompts for a login. I try some default credentials as its an easy machine and has a possibility of working, and surprisingly the creds admin:admin work.
 
-<figure><img src="HacktheBox/.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 Clicking on the "Manage ActiveMQ broker" hyperlink it takes us to a page called /admin/ and Here we can see some details including the version number.
 
-<figure><img src="HacktheBox/.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 ### CVE-2023-46604
 
@@ -116,7 +116,7 @@ Moving onto the exploitation.
 
 Cloning the repo and setting up one terminal with the python server hosting the poc and running the exploit in another terminal setting the port as the openwire protocol port:
 
-<figure><img src="HacktheBox/.gitbook/assets/image (2).png" alt=""><figcaption><p>Shell</p></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption><p>Shell</p></figcaption></figure>
 
 ## Foothold
 
@@ -139,7 +139,7 @@ then we use stty command to set terminal line settings and foreground back the t
 
 Setting the terminal to xterm color `export TERM=xterm-256color.`
 
-<figure><img src="HacktheBox/.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 ## Root
 
@@ -189,7 +189,7 @@ Running `sudo /usr/sbin/nginx -c /tmp/nginx.conf` doesnt return any output meani
 
 Voila the entire machine is readable here!
 
-<figure><img src="HacktheBox/.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
 And we navigate to /root/root.txt and thats root! We can also get shell as root by using the PUT request:\
 `curl -X PUT localhost:1337/root/.ssh/authorized_keys -d 'mysshkey'`
