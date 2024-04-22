@@ -47,7 +47,7 @@ There are the two typical ports open, ssh and port 80 which is a http server
 
 Looking at the web page its a website about a company called jupiter and they offer all sorts of space related services.
 
-<figure><img src="../../.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (5).png" alt=""><figcaption></figcaption></figure>
 
 ### Subdomain Enum
 
@@ -91,19 +91,19 @@ Adding this to our hosts file, I view the page and its a page called Moons - Das
 
 <div align="right" data-full-width="false">
 
-<figure><img src="../../.gitbook/assets/image (32).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (32).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
 3. What software is kiosk.jupiter.htb built with? Grafana
 
-We can see from the title and wappalyzer, the site is built using grafana.&#x20;
+We can see from the title and wappalyzer, the site is built using grafana.
 
-I interact with the website going clicking on links and looking at the requests and forwading them, while doing this I notice to retrieve the information about Moons, it sends a sql request that I can freely manipulate.&#x20;
+I interact with the website going clicking on links and looking at the requests and forwading them, while doing this I notice to retrieve the information about Moons, it sends a sql request that I can freely manipulate.
 
 4. What is the relative web path that contains raw SQL queries in the POST JSON body? /api/ds/query
 
-<figure><img src="../../.gitbook/assets/image (33).png" alt=""><figcaption><p>Post request to api/ds/query</p></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (33).png" alt=""><figcaption><p>Post request to api/ds/query</p></figcaption></figure>
 
 ### Foothold - SQLi
 
@@ -113,23 +113,23 @@ Exporting this request to a file called sqlrequest.txt, I feed it to sqlmap in o
 
 After a while we get an os-shell.
 
-<figure><img src="../../.gitbook/assets/image (34).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (34).png" alt=""><figcaption></figcaption></figure>
 
 The os shell is quite slow so I put a command in for a reverse shell, but this shell disappears after some time:
 
 <div data-full-width="false">
 
-<figure><img src="../../.gitbook/assets/image (36).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (36).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
-But know that we have an os-shell we know a payload that works and scrolling up in the sqlmap output it says that the command execution used was the "COPY .....  FROM PROGRAM" I researched this and found this medium article, it discusses many ways of code execution and one of them is the one sqlmap used.
+But know that we have an os-shell we know a payload that works and scrolling up in the sqlmap output it says that the command execution used was the "COPY ..... FROM PROGRAM" I researched this and found this medium article, it discusses many ways of code execution and one of them is the one sqlmap used.
 
 {% embed url="https://medium.com/r3d-buck3t/command-execution-with-postgresql-copy-command-a79aef9c2767" %}
 
-Scrolling down I found what I was looking for,&#x20;
+Scrolling down I found what I was looking for,
 
-<figure><img src="../../.gitbook/assets/image (37).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (37).png" alt=""><figcaption></figcaption></figure>
 
 I went back to burpsuite and inserted the command with my ip and port where sqlmap inserted their payload:
 
@@ -155,13 +155,13 @@ Now we have a fully functioning shell we can properly enumerate.
 
 The next question is;
 
-6. What is the full path to the script that is running as UID 1000 every two minutes?&#x20;
+6. What is the full path to the script that is running as UID 1000 every two minutes?
 
 We need to analyze a script that runs every two minutes, I am going to use pspy for this, I upload pspy32 from my local machine and view the output. After waiting a bunch of commands are executed by UID 1000 which is user juno. First they execute a script called shadow-simulation.sh in their directory whcih removes the file /dev/shm/shadow.data and runs the binary shadow on /dev/shm/network.yml. This network-simulation.yml is a file we have write access to.
 
 <div data-full-width="true">
 
-<figure><img src="../../.gitbook/assets/image (40).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (40).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -237,7 +237,7 @@ hosts:
 
 I apply this and after a while I run /tmp/bash -p and get a shell as juno !
 
-<figure><img src="../../.gitbook/assets/image (42).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (42).png" alt=""><figcaption></figcaption></figure>
 
 But if I try to cat user.txt, I get permission denied due to my uid not being juno. We know that shadow-simulation.sh (which is a file in juno's directory) is run every two minutes, but now we have permissions as juno so we can edit it and get a reverse shell from this script, I use a line from revshells.com.
 
@@ -276,7 +276,7 @@ I run linpeas as usual and the user juno has a group set as science.
 
 8. Besides the juno group, what other group is juno a part of? science
 
-<figure><img src="../../.gitbook/assets/image (43).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (43).png" alt=""><figcaption></figcaption></figure>
 
 9. What software is listening on TCP port 8888? Jupyter
 
@@ -291,7 +291,7 @@ Navigating there I see an application called Jupyter Notebook.
 
 <div data-full-width="false">
 
-<figure><img src="../../.gitbook/assets/image (44).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (44).png" alt=""><figcaption></figcaption></figure>
 
 </div>
 
@@ -337,22 +337,21 @@ juno@jupiter:/opt/solar-flares/logs$ cat jupyter-2023-10-31-56.log
 
 The token is what we need and it seems we can put it into our url instead, putting the ?token=c772d8e0e32ef84c360eee2d935f58aef582fc7df7b1dcf3 gave me access to the "tree" page. There's a listing of files, running and clusters. This is just the folder called /opt/solar-flares.
 
-<figure><img src="../../.gitbook/assets/image (45).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (45).png" alt=""><figcaption></figcaption></figure>
 
 Playing around with the web application theres an option to upload or create a file, if i click on new it gives the option of running python3 commands from the browser from this we can execute our own code using the os.system function.
 
 ### Python3 RCE
 
-<figure><img src="../../.gitbook/assets/image (48).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (48).png" alt=""><figcaption></figcaption></figure>
 
-Running whoami in the python3 file we can get a shell as the user jovian! Now we can execute commands as jovian, first thing we should do is get a proper shell. I grab a line from revshells.com selecting python3 and running it gives us a shell.\
+Running whoami in the python3 file we can get a shell as the user jovian! Now we can execute commands as jovian, first thing we should do is get a proper shell. I grab a line from revshells.com selecting python3 and running it gives us a shell.\\
 
-
-<figure><img src="../../.gitbook/assets/image (49).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (49).png" alt=""><figcaption></figcaption></figure>
 
 ### Sattrack Sudo
 
-One of the first things we do stabilise the shell but I have already posted how to do that previously. After we have gotten a stable shell I run sudo -l as part of enumeration and we immediately find that we can run sattrack as sudo with no password.&#x20;
+One of the first things we do stabilise the shell but I have already posted how to do that previously. After we have gotten a stable shell I run sudo -l as part of enumeration and we immediately find that we can run sattrack as sudo with no password.
 
 <pre data-overflow="wrap"><code><strong>jovian@jupiter:~/.jupyter$ sudo -l                      
 </strong>sudo -l
@@ -372,7 +371,7 @@ If we try to run sattrack as sudo it throws an error:\
 
 I download the sattrack binary to my machine and run `strings | grep config`. The output shows that it expects a config file to be `/tmp/config.json.`
 
-But we dont have a config.json in tmp right now so I run a find command to look for one `find / -name "config.json" 2>/dev/null`  and there is an already existing config in /usr/local/share/sattrack/config.json.
+But we dont have a config.json in tmp right now so I run a find command to look for one `find / -name "config.json" 2>/dev/null` and there is an already existing config in /usr/local/share/sattrack/config.json.
 
 14. What is the full path to the example sattrack config file on Jupiter? /usr/local/share/sattrack/config.json
 
@@ -414,18 +413,18 @@ jovian@jupiter:~$ cat /usr/local/share/sattrack/config.json
 }
 ```
 
-Running sudo sattrack with the config copied to the /tmp folder, it creates a directory /tmp/tle if it doesnt already exist and it downloads the file weather.txt from the tlesources list, since its being run as root we pretty much upload any file we wish into the root directory but thinking of one that will give us a shell took me some time.&#x20;
+Running sudo sattrack with the config copied to the /tmp folder, it creates a directory /tmp/tle if it doesnt already exist and it downloads the file weather.txt from the tlesources list, since its being run as root we pretty much upload any file we wish into the root directory but thinking of one that will give us a shell took me some time.
 
 After a while I thought that what we can do is put our own authorized\_keys file in the .ssh folder of root. We would do this by first creating the authorized\_keys file by copying id\_rsa into authorized\_keys and then hosting a python server. Then we add that to the sources list and change the tle root to /root/.ssh/ (the folder we want to upload to) and the tlefile to authorized\_keys (the file to upload). We also add the link to our python server with authorized\_keys file.
 
-<figure><img src="../../.gitbook/assets/image (50).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (50).png" alt=""><figcaption></figcaption></figure>
 
 Now running sudo sattrack, and hosting our python server.
 
-<figure><img src="../../.gitbook/assets/image (51).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (51).png" alt=""><figcaption></figcaption></figure>
 
 The file has been successfully transferred and attempting to ssh:
 
-<figure><img src="../../.gitbook/assets/image (52).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (52).png" alt=""><figcaption></figcaption></figure>
 
 We are now ROOT! This last part had me thinking for quite a bit I didn't think of such a creative way to get root.

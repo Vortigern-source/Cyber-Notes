@@ -6,7 +6,7 @@ description: >-
 
 # HTB - Broker
 
-<figure><img src="../../.gitbook/assets/Broker (2).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/Broker (2).png" alt=""><figcaption></figcaption></figure>
 
 ## Overview
 
@@ -16,7 +16,7 @@ A simple box that can be done with some basic enumeration and thinking, starting
 
 ### Nmap
 
-We will first start with an nmap scan, I run the command `sudo nmap -p- -sCV 10.10.11.243`  the -sCV for common scripts and version enumeration. It returns a lot of ports, the defaults being port 22 and 80. Apart from that there are 1883, 5672 ,8161, 43681 and 61613 which is actually an apache activeMQ server. Theres also jetty on 61614 and activemq openwire on 61616. From the scan we can see its running ubuntu and the nginx server is running ActiveMQRealm and returns 401.&#x20;
+We will first start with an nmap scan, I run the command `sudo nmap -p- -sCV 10.10.11.243` the -sCV for common scripts and version enumeration. It returns a lot of ports, the defaults being port 22 and 80. Apart from that there are 1883, 5672 ,8161, 43681 and 61613 which is actually an apache activeMQ server. Theres also jetty on 61614 and activemq openwire on 61616. From the scan we can see its running ubuntu and the nginx server is running ActiveMQRealm and returns 401.
 
 {% code overflow="wrap" %}
 ```
@@ -94,17 +94,17 @@ PORT      STATE SERVICE    VERSION
 
 Navigating to the webserver, it immediatley prompts for a login. I try some default credentials as its an easy machine and has a possibility of working, and surprisingly the creds admin:admin work.
 
-<figure><img src="../../.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image.png" alt=""><figcaption></figcaption></figure>
 
 Clicking on the "Manage ActiveMQ broker" hyperlink it takes us to a page called /admin/ and Here we can see some details including the version number.
 
-<figure><img src="../../.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (1).png" alt=""><figcaption></figcaption></figure>
 
 ### CVE-2023-46604
 
-Researching activemq version 5.15.15 looking for a vuln I find CVE-2023-46604 which is a vulnerability for the openwire protocol which we previously identified in the nmap scan.&#x20;
+Researching activemq version 5.15.15 looking for a vuln I find CVE-2023-46604 which is a vulnerability for the openwire protocol which we previously identified in the nmap scan.
 
-Understanding the POC, I found a [medium ](https://deepkondah.medium.com/unpacking-the-apache-activemq-exploit-cve-2023-46604-92ed1c125b53)post that explains it quite nicely.&#x20;
+Understanding the POC, I found a [medium ](https://deepkondah.medium.com/unpacking-the-apache-activemq-exploit-cve-2023-46604-92ed1c125b53)post that explains it quite nicely.
 
 The vulnerability is an insecure deserialization flaw. Insecure deserialization occurs when an application processes serialized data without proper validation, allowing attackers to manipulate the data to execute arbitrary code. Exploitation Mechanism: Openwire Protocol and Java Reflection API
 
@@ -116,11 +116,11 @@ Moving onto the exploitation.
 
 Cloning the repo and setting up one terminal with the python server hosting the poc and running the exploit in another terminal setting the port as the openwire protocol port:
 
-<figure><img src="../../.gitbook/assets/image (2).png" alt=""><figcaption><p>Shell</p></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (2).png" alt=""><figcaption><p>Shell</p></figcaption></figure>
 
 ## Foothold
 
-And just like that we get a shell on the machine as the user activemq, in their home directory we find the user flag.&#x20;
+And just like that we get a shell on the machine as the user activemq, in their home directory we find the user flag.
 
 ```
 activemq@broker:~$ cat user.txt
@@ -139,7 +139,7 @@ then we use stty command to set terminal line settings and foreground back the t
 
 Setting the terminal to xterm color `export TERM=xterm-256color.`
 
-<figure><img src="../../.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (3).png" alt=""><figcaption></figcaption></figure>
 
 ## Root
 
@@ -189,10 +189,9 @@ Running `sudo /usr/sbin/nginx -c /tmp/nginx.conf` doesnt return any output meani
 
 Voila the entire machine is readable here!
 
-<figure><img src="../../.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
+<figure><img src="HacktheBox/.gitbook/assets/image (4).png" alt=""><figcaption></figcaption></figure>
 
 And we navigate to /root/root.txt and thats root! We can also get shell as root by using the PUT request:\
 `curl -X PUT localhost:1337/root/.ssh/authorized_keys -d 'mysshkey'`
 
 Thanks for reading despite this not being a great writeup, im still learning.
-
