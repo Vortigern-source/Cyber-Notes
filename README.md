@@ -1,37 +1,20 @@
-# Cyber Security Notes
+---
+description: >-
+  This is where I publish my writeups for hackthebox boxes, these also serve as
+  my notes.
+---
 
-Hi, My name is Hamza and welcome to my Cyber Security Notes repository! Here, I'll store all my notes, resources, and references related to cybersecurity. As a beginner, this is my space to document what I learn and reference it whenever necessary.
+# Hack the Box Notes/Write-ups
 
-## Introduction
+My name is Hamza, I'm an IT student and doing hackthebox/tryhackme challenges is something I do in my freetime while also studying cyber security in general. Ive been meaning to start writeups for a long time as it helps me with notetaking and understanding the underlying principles rather than mindlessley solving and moving on.&#x20;
 
-In this digital age, cybersecurity is more important than ever. As I embark on learning about cybersecurity, this repository will serve as my knowledge base. I'll be documenting everything I learn, from basic concepts to more advanced techniques.
+### Hack the Box Machines
 
-## Topics Covered
+A listing of all the machines I have completed on Hack the Box. Click on the name to read a write-up of how I completed each one. Write-ups are only posted for retired machines ( Hackthebox TOS)
 
-Here are some of the topics I'll be covering in my notes:
+| Machine                                             | Date Owned | Difficulty |
+| --------------------------------------------------- | ---------- | ---------- |
+| [TwoMillion](linux-machines/easy/htb-twomillion.md) | 18/06/2023 | Easy       |
+| [Jupiter](linux-machines/medium/htb-jupiter.md)     | 31/10/2023 | Medium     |
+| [Broker](linux-machines/easy/htb-broker.md)         | 13/11/2023 | Easy       |
 
-- Network Security
-- Web Security
-- Cryptography
-- Malware Analysis
-- Incident Response
-- Penetration Testing
-- Hackthebox and Tryhackme Content
-
-Feel free to explore my notes and resources. They're a work in progress, so expect updates and additions over time!
-
-## Usage
-
-- **Browsing**: Feel free to browse through the folders to explore different topics.
-- **Search**: If you're looking for something specific, you can use the search feature to find relevant content.
-- **Feedback**: If you notice any errors or have suggestions for improvement, please let me know! I'm always open to feedback.
-
-## Contributing
-
-While this repository is primarily for my notes, I welcome contributions from fellow learners. If you have any resources, tips, or insights to share, feel free to open a pull request or reach out to me directly.
-
-## License
-
-This repository is licensed under the [MIT License](LICENSE). You're welcome to use the content for your own learning purposes.
-
-Happy learning!
